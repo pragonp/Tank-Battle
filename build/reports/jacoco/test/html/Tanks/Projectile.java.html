@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Projectile.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">01_Assignment</a> &gt; <a href="index.source.html" class="el_package">Tanks</a> &gt; <span class="el_source">Projectile.java</span></div><h1>Projectile.java</h1><pre class="source lang-java linenums">package Tanks;
+
+import processing.core.PApplet;
+
+public class Projectile {
+	/**
+	 * The owner of this projectile
+	 */
+	private String owner;
+	/**
+	 * Current active state of the projectile
+	 */
+	private boolean active;
+	/**
+	 * Current state whether the projectile should be displayed or not
+	 */
+	private boolean isDisplay;
+	/**
+	 * State whether the projectile has been exploded or not
+	 */
+	private boolean exploded;
+	/**
+	 * State whether the projectile has created explosion or not
+	 */
+	private boolean createdExplosion;
+	/**
+	 * The x position of the explosion
+	 */
+	private int xPosExploded;
+	/**
+	 * The y position of the explosion
+	 */
+	private float yPosExploded;
+	/**
+	 * Angle in degree
+	 */
+	private float angle;
+	/**
+	 * Angle in radians
+	 */
+	private float angleInRadians;
+	/**
+	 * Initial speed of the projectile
+	 */
+	private float speedInitial;
+	/**
+	 * Initial horizontal speed of the projectile
+	 */
+	private float speedInitialX;
+	/**
+	 * Initial vertical speed of the projectile
+	 */
+	private float speedInitialY;
+	/**
+	 * horizontal speed of the projectile
+	 */
+	private float speedX;
+	/**
+	 * vertical speed of the projectile
+	 */
+	private float speedY;
+	/**
+	 * x position of projectile
+	 */
+	private int xPos;
+	/**
+	 * y position of projectile
+	 */
+	private float yPos;
+	/**
+	 * initial y position of projectile
+	 */
+	private float yPosInitial;
+	/**
+	 * the power that fires this projectile
+	 */
+	private float power;
+	/**
+	 * Actual width size of projectile
+	 */
+<span class="fc" id="L81">	private float projectileWidth = 2f;</span>
+	/**
+	 * Actual length of projectile
+	 */
+<span class="fc" id="L85">	private float projectileLength = 2f;</span>
+	/**
+	 * Frame counter
+	 */
+<span class="fc" id="L89">	private int frameFromStart = 0;</span>
+	/**
+	 * Adjustment in horizontal space for in-terrain algorithm
+	 */
+<span class="fc" id="L93">	private int xPosAdjustRange = 5;</span>
+	/**
+	 * The wind speed
+	 */
+	private float windSpeed;
+	/**
+	 * State whether it's a large projectile or not
+	 */
+	private boolean largeProjectile;
+
+	/**
+	 * Gravity value
+	 */
+<span class="fc" id="L106">	private static final float gravity = 3.6f / App.getFPS(); // pixel per frame</span>
+
+	/**
+	 * Create new projectile
+	 * 
+	 * @param xOrigin         the starting x position
+	 * @param yOrigin         the starting y position
+	 * @param angle           the angle
+	 * @param power           the power used to fire this projectile
+	 * @param owner           the owner of this projectile
+	 * @param largeProjectile whether this is large projectile or not
+	 */
+<span class="fc" id="L118">	public Projectile(int xOrigin, float yOrigin, float angle, float power, String owner, boolean largeProjectile) {</span>
+<span class="fc" id="L119">		this.owner = owner;</span>
+<span class="fc" id="L120">		this.active = true;</span>
+<span class="fc" id="L121">		this.exploded = false;</span>
+<span class="fc" id="L122">		this.createdExplosion = false;</span>
+<span class="fc" id="L123">		this.xPos = xOrigin;</span>
+<span class="fc" id="L124">		this.yPos = yOrigin;</span>
+<span class="fc" id="L125">		this.yPosInitial = yOrigin;</span>
+<span class="fc" id="L126">		this.angle = angle;</span>
+<span class="fc" id="L127">		this.angleInRadians = (float) Math.toRadians(angle);</span>
+<span class="fc" id="L128">		this.power = power;</span>
+<span class="fc" id="L129">		this.speedInitial = calspeedInitial(power);</span>
+<span class="fc" id="L130">		this.speedInitialX = -speedInitial * (float) Math.cos(angleInRadians);</span>
+<span class="fc" id="L131">		this.speedX = this.speedInitialX;</span>
+<span class="fc" id="L132">		this.speedInitialY = -speedInitial * (float) Math.sin(angleInRadians);</span>
+<span class="fc" id="L133">		this.speedY = this.speedInitialY;</span>
+<span class="fc" id="L134">		this.largeProjectile = largeProjectile;</span>
+<span class="fc" id="L135">		this.frameFromStart = 0;</span>
+<span class="fc" id="L136">	}</span>
+
+	/**
+	 * The actions that happen with projectile in every tick
+	 */
+	public void tick() {
+<span class="fc" id="L142">		isDisplay();</span>
+
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">		if (active) {</span>
+<span class="fc" id="L145">			float terrainHeight = App.getTerrainHeight(xPos, &quot;pixel&quot;);</span>
+
+<span class="fc bfc" id="L147" title="All 2 branches covered.">			if (frameFromStart == 0) {</span>
+<span class="fc" id="L148">				yPos = terrainHeight;</span>
+<span class="fc" id="L149">				yPosInitial = terrainHeight;</span>
+<span class="fc" id="L150">				frameFromStart++;</span>
+<span class="fc" id="L151">				return;</span>
+			}
+
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">			if (yPos &gt; terrainHeight) {</span>
+<span class="nc" id="L155">				xPosAdjust();</span>
+<span class="nc" id="L156">				exploded = true;</span>
+<span class="nc" id="L157">				active = false;</span>
+<span class="nc" id="L158">				xPosExploded = xPos;</span>
+<span class="nc" id="L159">				yPosExploded = yPos;</span>
+<span class="nc" id="L160">				return;</span>
+			}
+
+<span class="fc" id="L163">			windBlow();</span>
+<span class="fc" id="L164">			xPos += speedX;</span>
+<span class="fc" id="L165">			speedY += gravity;</span>
+<span class="fc" id="L166">			yPos = yPosInitial + (speedInitialY * frameFromStart)</span>
+<span class="fc" id="L167">					+ (0.5f * gravity * (float) Math.pow(frameFromStart, 2));</span>
+<span class="fc" id="L168">			checkbound();</span>
+		}
+
+<span class="fc" id="L171">		frameFromStart++;</span>
+<span class="fc" id="L172">	}</span>
+
+	/**
+	 * Draw the projectile
+	 * 
+	 * @param app app
+	 */
+	public void draw(PApplet app) {
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">		if (isDisplay) {</span>
+<span class="nc" id="L181">			app.fill(0);</span>
+<span class="nc" id="L182">			app.stroke(0);</span>
+<span class="nc" id="L183">			app.ellipse(this.xPos, this.yPos, projectileWidth, projectileLength);</span>
+		}
+<span class="fc" id="L185">	}</span>
+
+	/**
+	 * Set the projectile to be displayed
+	 */
+	public void setIsDisplay() {
+<span class="fc" id="L191">		isDisplay = true;</span>
+<span class="fc" id="L192">	}</span>
+
+	/**
+	 * Get the state whether this is a large projectile
+	 * 
+	 * @return large projectile state
+	 */
+	public boolean isLargeProjectile() {
+<span class="fc" id="L200">		return largeProjectile;</span>
+	}
+
+	/**
+	 * Check whether the projectile should be displayed or not
+	 */
+	public void isDisplay() {
+<span class="fc" id="L207">		float terrainHeight = App.getTerrainHeight(xPos, &quot;pixel&quot;);</span>
+<span class="pc bpc" id="L208" title="2 of 6 branches missed.">		if (active &amp;&amp; !exploded &amp;&amp; yPos &lt; terrainHeight) {</span>
+<span class="nc" id="L209">			isDisplay = true;</span>
+		} else {
+<span class="fc" id="L211">			isDisplay = false;</span>
+		}
+<span class="fc" id="L213">	}</span>
+
+	/**
+	 * The active status of projectile
+	 * 
+	 * @return active status
+	 */
+	public boolean isActive() {
+<span class="fc" id="L221">		return active;</span>
+	}
+
+	/**
+	 * Calculate the initial speed
+	 * 
+	 * @param power power used
+	 * @return initial speed
+	 */
+	public float calspeedInitial(float power) {
+<span class="fc bfc" id="L231" title="All 4 branches covered.">		if (power &lt; 0 || power &gt; 100) {</span>
+<span class="fc" id="L232">			System.out.println(&quot;Incorrect power provided&quot;);</span>
+<span class="fc" id="L233">			return 0;</span>
+		} else {
+<span class="fc" id="L235">			return (power / 12.5f + 1) * 2; // as per latest Ed annoucement</span>
+		}
+	}
+
+	/**
+	 * Calculate the ending x position of the turret
+	 * 
+	 * @param xPos x position
+	 * @return the ending x position of the turret
+	 */
+	public float calxPosEnd(float xPos) {
+<span class="fc" id="L246">		return xPos + (float) Math.cos(angleInRadians) * projectileLength;</span>
+	}
+
+	/**
+	 * Calculate the ending y position of the turret
+	 * 
+	 * @param yPos y position
+	 * @return the ending y position of the turret
+	 */
+	public float calyPosEnd(float yPos) {
+<span class="fc" id="L256">		return yPos + (float) Math.sin(angleInRadians) * projectileLength;</span>
+	}
+
+	/**
+	 * Projectile takes the effect on wind
+	 */
+	public void windBlow() {
+<span class="fc" id="L263">		speedX += 0.03 * windSpeed / App.getFPS();</span>
+<span class="fc" id="L264">	}</span>
+
+	/**
+	 * Get the exploded status
+	 * 
+	 * @return exploded status
+	 */
+	public boolean getExplodedStatus() {
+<span class="fc" id="L272">		return this.exploded;</span>
+	}
+
+	/**
+	 * Get the state whether the explosion has been created or not
+	 * 
+	 * @return explosion creation state
+	 */
+	public boolean createdExplosion() {
+<span class="fc" id="L281">		return this.createdExplosion;</span>
+	}
+
+	/**
+	 * Set the explosion creation state
+	 */
+	public void setCreateExplosion() {
+<span class="fc" id="L288">		this.createdExplosion = true;</span>
+<span class="fc" id="L289">	}</span>
+
+	/**
+	 * Get the x position of projectile
+	 * 
+	 * @return x position
+	 */
+	public int getxPos() {
+<span class="fc" id="L297">		return this.xPos;</span>
+	}
+
+	/**
+	 * Set the projectile exploded state
+	 */
+	public void setExplodedStatus() {
+<span class="fc" id="L304">		exploded = true;</span>
+<span class="fc" id="L305">	}</span>
+
+	/**
+	 * Set the projectile x positon
+	 * 
+	 * @param xPos x position
+	 */
+	public void setXPos(int xPos) {
+<span class="fc" id="L313">		this.xPos = xPos;</span>
+<span class="fc" id="L314">	}</span>
+
+	/**
+	 * Get the y position of the projectile
+	 * 
+	 * @return y position
+	 */
+	public float getyPos() {
+<span class="fc" id="L322">		return this.yPos;</span>
+	}
+
+	/**
+	 * Get the x position where explosion occurred
+	 * 
+	 * @return x position of explosion
+	 */
+	public int getxPosExploded() {
+<span class="fc" id="L331">		return this.xPosExploded;</span>
+	}
+
+	/**
+	 * Get the y position where explosion occurred
+	 * 
+	 * @return y position of explosion
+	 */
+	public float getyPosExploded() {
+<span class="fc" id="L340">		return this.yPosExploded;</span>
+	}
+
+	/**
+	 * Get the angle
+	 * 
+	 * @return angle in degree
+	 */
+	public float getAngle() {
+<span class="fc" id="L349">		return this.angle;</span>
+	}
+
+	/**
+	 * Get the angle in radians
+	 * 
+	 * @return angle in radians
+	 */
+	public float getAngleRadian() {
+<span class="fc" id="L358">		return this.angleInRadians;</span>
+	}
+
+	/**
+	 * Get the horizontal speed
+	 * 
+	 * @return horizontal speed
+	 */
+	public float getspeedX() {
+<span class="fc" id="L367">		return this.speedX;</span>
+	}
+
+	/**
+	 * Get the vertical speed
+	 * 
+	 * @return vertical speed
+	 */
+	public float getspeedY() {
+<span class="fc" id="L376">		return this.speedY;</span>
+	}
+
+	/**
+	 * Get the power
+	 * 
+	 * @return power
+	 */
+	public float getPower() {
+<span class="fc" id="L385">		return this.power;</span>
+	}
+
+	/**
+	 * Adjust x position to cover the in-terrain case
+	 */
+	public void xPosAdjust() {
+<span class="fc" id="L392">		float maxDiff = Float.MAX_VALUE;</span>
+<span class="fc" id="L393">		int newXPos = xPos;</span>
+
+		// Ensure startPos and endPos are within bounds
+<span class="fc" id="L396">		int startPos = Math.max(0, xPos - xPosAdjustRange);</span>
+<span class="fc" id="L397">		int endPos = Math.min(App.smoothTerrain.size() - 1, xPos + xPosAdjustRange);</span>
+
+<span class="fc bfc" id="L399" title="All 2 branches covered.">		for (int i = startPos; i &lt;= endPos; i++) {</span>
+<span class="fc" id="L400">			float terrainHeight = App.smoothTerrain.get(i) * App.getCell(&quot;height&quot;);</span>
+			// float diff = Math.abs(terrainHeight - yPos);
+<span class="fc" id="L402">			float diffX = Math.abs(i - xPos);</span>
+<span class="fc" id="L403">			float diffY = Math.abs(terrainHeight - yPos);</span>
+
+<span class="fc" id="L405">			float diff = (float) Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));</span>
+
+<span class="fc bfc" id="L407" title="All 2 branches covered.">			if (diff &lt; maxDiff) {</span>
+<span class="fc" id="L408">				maxDiff = diff;</span>
+<span class="fc" id="L409">				newXPos = i;</span>
+			}
+		}
+
+<span class="fc" id="L413">		xPos = newXPos;</span>
+<span class="fc" id="L414">	}</span>
+
+	/**
+	 * Check boundary condition
+	 */
+	public void checkbound() {
+<span class="fc bfc" id="L420" title="All 2 branches covered.">		if (xPos &gt; App.getBoard(&quot;width&quot;)) {</span>
+<span class="fc" id="L421">			xPos = App.getBoard(&quot;width&quot;);</span>
+<span class="fc" id="L422">			active = false;</span>
+<span class="fc bfc" id="L423" title="All 2 branches covered.">		} else if (xPos &lt; 0) {</span>
+<span class="fc" id="L424">			xPos = 0;</span>
+<span class="fc" id="L425">			active = false;</span>
+		}
+<span class="fc" id="L427">	}</span>
+
+	/**
+	 * Get the owner of projectile
+	 * 
+	 * @return onwer
+	 */
+	public String getOwner() {
+<span class="fc" id="L435">		return owner;</span>
+	}
+
+	/**
+	 * Set the windspeed for this projectile
+	 * 
+	 * @param windSpeed wind speed
+	 */
+	public void setWindSpeed(float windSpeed) {
+<span class="fc" id="L444">		this.windSpeed = windSpeed;</span>
+<span class="fc" id="L445">	}</span>
+
+	/**
+	 * Get the wind speed
+	 * 
+	 * @return wind speed
+	 */
+	public float getWindSpeed() {
+<span class="fc" id="L453">		return windSpeed;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
