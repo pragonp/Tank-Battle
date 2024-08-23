@@ -22,6 +22,9 @@ cd Tank-Battle
 ```bash
 gradle run
 ```
+> [!NOTE]
+> If you do not have Gradle, you can follow the [Installation Guide](https://docs.gradle.org/current/userguide/installation.html)
+
 **Step #3:** Enjoy! Some key controls are:
 - Arrow keys (`UP`/`DOWN`/`LEFT`/`RIGHT`) for tank movement
 - `W` and `S` to increase or decrease turret power
