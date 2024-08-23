@@ -23,15 +23,13 @@ cd Tank-Battle
 gradle run
 ```
 **Step #3:** Enjoy! Some key controls are:
-
 - Arrow keys (`UP`/`DOWN`/`LEFT`/`RIGHT`) for tank movement
 - `W` and `S` to increase or decrease turret power
 - `Spacebar` to fire the projectile!
 - `R` to repair the tank
 - `F` to add fuel
-- `P` to deploy a parachute
+- `P` to buy more parachute
 - `X` to use a larger projectile for more fun!
-   
 
 ## Features
 - **Tank Movement:** Players can navigate their tanks around the battlefield.-Aiming and Firing: Players can aim their tank's turret and fire at opponents.
