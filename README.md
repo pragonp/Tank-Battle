@@ -1,24 +1,41 @@
-# Tank battle
+# Tank Battle
+
 Welcome to my tank battle game prototype, developed in Java using the Processing library and Gradle as a dependency manager.
 
 ## Overview
- In this game, players control tanks, strategically aiming and firing to score hits and reduce opponents' health. 
- The player with the highest score after all levels wins. This project demonstrates my skills in game development and Java programming, turning a concept into a playable, dynamic experience.
- 
+
+In this game, players control tanks, strategically aiming and firing to score hits and reduce opponents' health. The player with the highest score after all levels wins. This project demonstrates my skills in game development and Java programming, turning a concept into a playable, dynamic experience.
+
+![screenshot of the game](https://i.ibb.co/3f8DDt5/screenshot.png)
+
 ## Installation
-1. Clone the repository
-```
+
+**Step #1:** Clone the repository using:
+```bash
 git clone https://github.com/pragonp/Tank-Battle.git
+```
+and then access the directory
+```bash
 cd Tank-Battle
 ```
-2. Run the game
-```
+**Step #2:** Run the game
+```bash
 gradle run
 ```
+**Step #3:** Enjoy! Some key controls are:
+
+- Arrow keys (`UP`/`DOWN`/`LEFT`/`RIGHT`) for tank movement
+- `W` and `S` to increase or decrease turret power
+- `Spacebar` to fire the projectile!
+- `R` to repair the tank
+- `F` to add fuel
+- `P` to deploy a parachute
+- `X` to use a larger projectile for more fun!
    
 
 ## Features
 - **Tank Movement:** Players can navigate their tanks around the battlefield.-Aiming and Firing: Players can aim their tank's turret and fire at opponents.
+- **Aiming and Firing:** Players can aim their tank's turret and fire at opponents.
 - **Score Tracking:** The game keeps track of each player's score throughout the levels.
 - **Health Management:** Tanks have a health system that decreases upon being hit.
 
