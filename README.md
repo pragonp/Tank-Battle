@@ -35,15 +35,15 @@ gradle run
 - `X` to use a larger projectile for more fun!
 
 ## Features
-- **Tank Movement:** Players can navigate their tanks around the battlefield.-Aiming and Firing: Players can aim their tank's turret and fire at opponents.
-- **Aiming and Firing:** Players can aim their tank's turret and fire at opponents.
-- **Score Tracking:** The game keeps track of each player's score throughout the levels.
-- **Health Management:** Tanks have a health system that decreases upon being hit.
+- **Tank Movement:** Players can navigate their tanks around the battlefield.-Aiming and Firing: Players can aim their tank's turret and fire at opponents
+- **Aiming and Firing:** Players can aim their tank's turret and fire at opponents
+- **Score Tracking:** The game keeps track of each player's score throughout the levels
+- **Health Management:** Tanks have a health system that decreases upon being hit
 
 ## Tool and Technologies
 - **Java:** The game logic is implemented in Java with OOP principles
-- **Processing Libaries:** Used for rendering the game's graphics.
-- **Gradle:** Employed as a dependency manager to handle library dependencies and build configurations.
+- **Processing Libaries:** Used for rendering the game's graphics
+- **Gradle:** Employed as a dependency manager to handle library dependencies and build configurations
 
 ## Future Enhancement
 - Adding AI-controlled tanks with several difficulties
